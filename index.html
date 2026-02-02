@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Foczko 💖</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background-color: #ffe066;
+      font-family: 'Comic Sans MS', cursive;
+      overflow: hidden;
+    }
+
+    /* WARSTWA SERC – NIE RUSZA LAYOUTU */
+    #hearts-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 46px;
+      opacity: 0.75;
+      animation: float 12s linear infinite;
+    }
+
+    @keyframes float {
+      from { top: 110vh; }
+      to   { top: -140px; }
+    }
+
+    /* RAMKA – ZAWSZE STAŁA */
+    .container {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .box {
+      background: white;
+      padding: 60px;
+      border-radius: 30px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 72px;
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      font-size: 57px;
+      margin-bottom: 50px;
+    }
+
+    button {
+      font-size: 39px;
+      padding: 22px 55px;
+      border: none;
+      border-radius: 60px;
+      cursor: pointer;
+      margin: 25px;
+    }
+
+    #yes {
+      background-color: #ff4d6d;
+      color: white;
+    }
+
+    /* 🔥 UCIEKAJĄCE NIE */
+    #no {
+      background-color: #ddd;
+      position: fixed; /* KLUCZ */
+      transition: left 0.15s ease, top 0.15s ease;
+    }
+
+    /* SERCA PO TAK */
+    .burst-heart {
+      position: fixed;
+      font-size: 44px;
+      animation: burst 4s ease-out forwards;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    @keyframes burst {
+      0% {
+        transform: scale(0);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1.8) translateY(-320px);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 💖 TŁO -->
+  <div id="hearts-layer">
+    <div class="heart" style="left:5%; animation-delay:0s;">💖</div>
+    <div class="heart" style="left:15%; animation-delay:2s;">💗</div>
+    <div class="heart" style="left:25%; animation-delay:4s;">💓</div>
+    <div class="heart" style="left:35%; animation-delay:1s;">💕</div>
+    <div class="heart" style="left:45%; animation-delay:3s;">💘</div>
+    <div class="heart" style="left:55%; animation-delay:5s;">💖</div>
+    <div class="heart" style="left:65%; animation-delay:2s;">💗</div>
+    <div class="heart" style="left:75%; animation-delay:4s;">💓</div>
+    <div class="heart" style="left:85%; animation-delay:1s;">💕</div>
+    <div class="heart" style="left:95%; animation-delay:3s;">💘</div>
+  </div>
+
+  <!-- 📦 RAMKA -->
+  <div class="container">
+    <div class="box" id="page1">
+      <h1>Kochana Agatko 🦭</h1>
+      <h2>Zostaniesz moją walentynką? 💕</h2>
+      <button id="yes">TAK 🦭💖</button>
+      <button id="no">NIE 😢</button>
+    </div>
+
+    <div class="box" id="page2" style="display:none;">
+      <h1>💖 JEEEJ! 💖</h1>
+      <p style="font-size:42px;">
+        Wiedziałem, że się zgodzisz 🦭<br>
+        Najlepsza walentynka na świecie 💕<br>
+        Kocham Cię najmocniej 💗
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const noButton = document.getElementById("no");
+    const yesButton = document.getElementById("yes");
+    const page1 = document.getElementById("page1");
+    const page2 = document.getElementById("page2");
+
+    /* 🏃‍♂️ NIE UCIEKA, ALE NIGDY POZA EKRAN */
+    noButton.addEventListener("mouseenter", () => {
+      const rect = noButton.getBoundingClientRect();
+
+      const maxX = Math.max(0, window.innerWidth - rect.width);
+      const maxY = Math.max(0, window.innerHeight - rect.height);
+
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+
+      noButton.style.left = `${x}px`;
+      noButton.style.top  = `${y}px`;
+    });
+
+    /* 💥 TAK → DRUGA STRONA + SERCA */
+    yesButton.addEventListener("click", () => {
+      page1.style.display = "none";
+      page2.style.display = "block";
+
+      const duration = 15000;
+      const interval = setInterval(() => {
+        for (let i = 0; i < 10; i++) {
+          const heart = document.createElement("div");
+          heart.className = "burst-heart";
+          heart.textContent = ["💖","💗","💓","💕","💘"][Math.floor(Math.random() * 5)];
+          heart.style.left = Math.random() * window.innerWidth + "px";
+          heart.style.top  = Math.random() * window.innerHeight + "px";
+          document.body.appendChild(heart);
+          setTimeout(() => heart.remove(), 4000);
+        }
+      }, 200);
+
+      setTimeout(() => clearInterval(interval), duration);
+    });
+  </script>
+
+</body>
+</html>
